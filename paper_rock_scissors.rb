@@ -1,4 +1,3 @@
-
 def convert(input)
   if input == "p"
     user_choice = "Paper"
@@ -8,7 +7,6 @@ def convert(input)
     user_choice = "Scissors"
   end
 end
-
 
 def computer_choice
   r = Random.rand(1..3)
