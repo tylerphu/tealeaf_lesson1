@@ -1,4 +1,5 @@
 choices = {"p" => "Paper", "r" => "Rock", "s" => "Scissors" }
+
 def convert(input, choices)
   user_choice = choices[input]
 end
@@ -7,17 +8,6 @@ def computer_choice(choices)
   selection = ["p", "r", "s"].sample
   comp_choice = choices[selection]
 end
-
-#def computer_choice
-#  r = Random.rand(1..3)
-#  if r == 1
-#    comp_choice = "Paper"
-#  elsif r == 2
-#    comp_choice = "Rock"
-#  else
-#    comp_choice = "Scissors"
-#  end
-#end
 
 def battle(user_choice, comp_choice)
   choices = [user_choice, comp_choice]
