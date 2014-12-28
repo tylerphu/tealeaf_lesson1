@@ -1,23 +1,23 @@
-def convert(input)
-  if input == "p"
-    user_choice = "Paper"
-  elsif input == "r"
-    user_choice = "Rock"
-  else
-    user_choice = "Scissors"
-  end
+choices = {"p" => "Paper", "r" => "Rock", "s" => "Scissors" }
+def convert(input, choices)
+  user_choice = choices[input]
 end
 
-def computer_choice
-  r = Random.rand(1..3)
-  if r == 1
-    comp_choice = "Paper"
-  elsif r == 2
-    comp_choice = "Rock"
-  else
-    comp_choice = "Scissors"
-  end
+def computer_choice(choices)
+  selection = ["p", "r", "s"].sample
+  comp_choice = choices[selection]
 end
+
+#def computer_choice
+#  r = Random.rand(1..3)
+#  if r == 1
+#    comp_choice = "Paper"
+#  elsif r == 2
+#    comp_choice = "Rock"
+#  else
+#    comp_choice = "Scissors"
+#  end
+#end
 
 def battle(user_choice, comp_choice)
   choices = [user_choice, comp_choice]
@@ -48,8 +48,8 @@ begin
     input = gets.chomp.downcase
   end until input =~ /[prs]/
 
-  user_choice = convert(input)
-  comp_choice = computer_choice
+  user_choice = convert(input, choices)
+  comp_choice = computer_choice(choices)
   puts "You picked #{user_choice} and computer picked #{comp_choice}."
   battle(user_choice, comp_choice)
   who_win(user_choice, comp_choice)
