@@ -8,74 +8,74 @@
 
 require 'pry'
 
-def board_positions(position)
-  8.times { |i| position[i] = " "}
+def empty_positions(position)
+  9.times { |i| position[i] = " "}
 end
 
-def display_board(player_moves, comp_moves, position, available_moves)
+def display_board(player_positions, comp_positions, board_position, available_positions)
   system 'clear'
-  player_moves.each do |moves|
-    position[moves-1] = "O"
+  player_positions.each do |pos|
+    board_position[pos-1] = "O"
   end
-  if available_moves.length != 0
-    comp_moves.each do |moves|
-    position[moves-1] = "X"
+  if available_positions.length != 0
+    comp_positions.each do |pos|
+    board_position[pos-1] = "X"
     end
   end
   puts "============Tic Tac Toe============"
   puts "           |           |           "
   puts "           |           |           "
-  puts "     #{position[0]}     |     #{position[1]}     |     #{position[2]}      "
+  puts "     #{board_position[0]}     |     #{board_position[1]}     |     #{board_position[2]}      "
   puts "           |           |           "
   puts "           |           |           "
   puts "-----------------------------------"
   puts "           |           |           "
   puts "           |           |           "
-  puts "     #{position[3]}     |     #{position[4]}     |     #{position[5]}      "
+  puts "     #{board_position[3]}     |     #{board_position[4]}     |     #{board_position[5]}      "
   puts "           |           |           "
   puts "           |           |           "
   puts "-----------------------------------"
   puts "           |           |           "
   puts "           |           |           "
-  puts "     #{position[6]}     |     #{position[7]}     |     #{position[8]}      "
+  puts "     #{board_position[6]}     |     #{board_position[7]}     |     #{board_position[8]}      "
   puts "           |           |           "
   puts "           |           |           "
   puts "==================================="
 end
 
 
-def generate_comp_move(available_moves, comp_moves)
-  comp_moves << available_moves.sample
-  available_moves.delete(comp_moves[-1])
+def generate_comp_position(available_positions, comp_positions)
+  comp_positions << available_positions.sample
+  available_positions.delete(comp_positions[-1])
 end
 
-def register_player_move(move, player_moves, available_moves)
-  player_moves << move
-  available_moves.delete(move)
+def register_player_position(new_position, player_positions, available_positions)
+  player_positions << new_position
+  available_positions.delete(new_position)
 end
 
-def validate(move, available_moves, player_moves)
-  if move < 1 || move > 9
+def get_player_input(new_position, available_positions, player_positions)
+  if new_position < 1 || new_position > 9
     puts "Invalid move. Please try again."
     return false
-  elsif player_moves.length == 0
-    register_player_move(move, player_moves, available_moves)
+  elsif player_positions.length == 0
+    register_player_position(new_position, player_positions, available_positions)
     return true
-  elsif available_moves.length <= 8 && available_moves.include?(move) == false
+  elsif available_positions.length <= 8 && available_positions.include?(new_position) == false
     puts "This position has already been filled. Please try again."
     return false
   else
-    register_player_move(move, player_moves, available_moves)
+    register_player_position(new_position, player_positions, available_positions)
     return true
   end
 end
 
-def winner_is(player_moves, comp_moves, winning_positions)
+def winner_is(player_positions, comp_positions, winning_positions)
   winning_positions.each do |winning|
-    if (winning - player_moves).empty?
+    if (winning - player_positions).empty?
       puts "You won!"
       return "Game Over."
-    elsif (winning - comp_moves).empty?
+    elsif (winning - comp_positions).empty?
       puts "Sorry, you lost!"
       return "Game Over."
     end
@@ -83,46 +83,33 @@ def winner_is(player_moves, comp_moves, winning_positions)
 end
 
 begin
-  position = []
-  board_positions(position)
-  available_moves = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
-  player_moves = []
-  comp_moves = []
+  board_position = []
+  empty_positions(board_position)
+  available_positions = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+  player_positions = []
+  comp_positions = []
   winning_positions = [[ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ], [ 1, 4, 7 ], [ 2, 5, 8 ], [ 3, 6, 9 ], [ 1, 5, 9 ], [ 3, 5, 7 ]]
   game_over = false
-  display_board(player_moves, comp_moves, position, available_moves)
+  display_board(player_positions, comp_positions, board_position, available_positions)
   begin
     begin  
       puts "Choose a position (from 1 to 9) to place a piece:"
-      move = gets.chomp.to_i
-    end until validate(move, available_moves, player_moves)
-    display_board(player_moves, comp_moves, position, available_moves)
-    game_over = winner_is(player_moves, comp_moves, winning_positions)
-    game_over = "tie game" if available_moves.length == 0
+      new_position = gets.chomp.to_i
+    end until get_player_input(new_position, available_positions, player_positions)
+    display_board(player_positions, comp_positions, board_position, available_positions)
+    game_over = winner_is(player_positions, comp_positions, winning_positions)
+    game_over = "tie game" if available_positions.length == 0
     break if game_over == "Game Over."
-    generate_comp_move(available_moves, comp_moves)
-    display_board(player_moves, comp_moves, position, available_moves)
+    generate_comp_position(available_positions, comp_positions)
+    display_board(player_positions, comp_positions, board_position, available_positions)
 
-    game_over = winner_is(player_moves, comp_moves,winning_positions)
+    game_over = winner_is(player_positions, comp_positions,winning_positions)
     break if game_over == "Game Over."
-    game_over = "tie game" if available_moves.length == 0
+    game_over = "tie game" if available_positions.length == 0
  
     #binding.pry
-  end until available_moves.length == 0
-  puts "It's a tie!" if available_moves.length == 0 && game_over == "tie game"
+  end until available_positions.length == 0
+  puts "It's a tie!" if available_positions.length == 0 && game_over == "tie game"
   puts "Play again? (Y/N)"
   repeat = gets.chomp.downcase
 end until repeat != "y"
-
-
-# begin
-#   begin
-#     puts "Choose a position (from 1 to 9) to place a piece:"
-#     move = gets.chomp.to_i
-#     player_moves << move
-#     available_moves.delete(move)
-#     puts "This position has already been placed. Please try again" while available_moves.length < 8 && available_moves.inclue?(move) == false
-#   end until validate(move)
-
-#   comp_move << available_moves.sample
-# end while available_moves.length > 0
