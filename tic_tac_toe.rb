@@ -1,14 +1,13 @@
 # 1. Create tic tac toe playboard with 9 cells
-# 2. Prompt user input for move
-# 3. Place user move to the appropriate cell
-# 4. Generate computer move
+# 2. Prompt player for input
+# 3. Place player position to the appropriate cell
+# 4. Generate computer position
 # 5. Check result to determine winner
-# 6. If no winner yet, repeat from step 2
-# 7. If there is a winner or all 9 cells are filled, prompt user to play again?
+# 6. If no winner or tie, repeat from step 2
+# 7. Announce result if there is a winner or all 9 cells have been filled (tie)
+# 8. Prompt player to play again
 
-require 'pry'
-
-def empty_positions(position)
+def create_empty_board(position)
   9.times { |i| position[i] = " "}
 end
 
@@ -54,9 +53,9 @@ def register_player_position(new_position, player_positions, available_positions
   available_positions.delete(new_position)
 end
 
-def get_player_input(new_position, available_positions, player_positions)
-  if new_position < 1 || new_position > 9
-    puts "Invalid move. Please try again."
+def validate_player_input(new_position, available_positions, player_positions)
+  if (1..9).include?(new_position) == false 
+    puts "Invalid position. Please try again."
     return false
   elsif player_positions.length == 0
     register_player_position(new_position, player_positions, available_positions)
@@ -70,46 +69,45 @@ def get_player_input(new_position, available_positions, player_positions)
   end
 end
 
-def winner_is(player_positions, comp_positions, winning_positions)
+def check_winner(player_positions, comp_positions, winning_positions)
   winning_positions.each do |winning|
     if (winning - player_positions).empty?
-      puts "You won!"
-      return "Game Over."
+      return "You won!"
     elsif (winning - comp_positions).empty?
-      puts "Sorry, you lost!"
-      return "Game Over."
+      return "Computer won!"
     end
   end
+  return false
 end
+
+def announce_result(winner)
+  puts winner if winner == "You won!" || winner == "Computer won!"
+  puts "It's a tie!" if winner == false
+end  
 
 begin
   board_position = []
-  empty_positions(board_position)
+  create_empty_board(board_position)
   available_positions = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
   player_positions = []
   comp_positions = []
   winning_positions = [[ 1, 2, 3 ], [ 4, 5, 6 ], [ 7, 8, 9 ], [ 1, 4, 7 ], [ 2, 5, 8 ], [ 3, 6, 9 ], [ 1, 5, 9 ], [ 3, 5, 7 ]]
-  game_over = false
+  winner = false
   display_board(player_positions, comp_positions, board_position, available_positions)
   begin
     begin  
       puts "Choose a position (from 1 to 9) to place a piece:"
       new_position = gets.chomp.to_i
-    end until get_player_input(new_position, available_positions, player_positions)
+    end until validate_player_input(new_position, available_positions, player_positions)
     display_board(player_positions, comp_positions, board_position, available_positions)
-    game_over = winner_is(player_positions, comp_positions, winning_positions)
-    game_over = "tie game" if available_positions.length == 0
-    break if game_over == "Game Over."
+    winner = check_winner(player_positions, comp_positions, winning_positions)
+    break if winner   
     generate_comp_position(available_positions, comp_positions)
     display_board(player_positions, comp_positions, board_position, available_positions)
-
-    game_over = winner_is(player_positions, comp_positions,winning_positions)
-    break if game_over == "Game Over."
-    game_over = "tie game" if available_positions.length == 0
- 
-    #binding.pry
+    winner = check_winner(player_positions, comp_positions,winning_positions)
+    break if winner
   end until available_positions.length == 0
-  puts "It's a tie!" if available_positions.length == 0 && game_over == "tie game"
+  announce_result(winner) 
   puts "Play again? (Y/N)"
   repeat = gets.chomp.downcase
 end until repeat != "y"
