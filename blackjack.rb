@@ -12,8 +12,6 @@
 
 require 'pry'
 
-test_hand = [["Ace", "Diamond"], ["Jack", "Club"]]
-
 def dealing_card(deck, receiver)
   receiver << deck.pop
 end
@@ -39,16 +37,6 @@ def update_points(hand, current_points, got_ace)
   end
   got_ace.call(hand, current_points)
 end
-
-# def got_ace(hand, total_points)
-#   hand.each do |card|
-#     if card[0] == "Ace" && total_points <= 10
-#       total_points += 11
-#     else
-#       total_points += 1
-#     end
-#   end
-# end
 
 got_ace = Proc.new do |hand, total_points|
   hand.each do |card|
@@ -104,10 +92,6 @@ def show_card(hand)
   end
   cards.join(", ")
 end
-
-# def display_cards(hand)
-#   numcard = hand.length
-#   puts "You got "
 
 begin
   suits = ["Heart", "Diamond", "Club", "Spade"]
