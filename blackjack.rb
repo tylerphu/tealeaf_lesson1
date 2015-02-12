@@ -131,11 +131,9 @@ begin
       dealing_card(deck, dealer_hand)
       dealer_cards = show_card(dealer_hand)
       dealer_points = update_points(dealer_hand, dealer_points, got_ace)
-      # puts "Dealer has #{dealer_cards} : total points is #{dealer_points}"
     end
     dealer_cards = show_card(dealer_hand)
     puts "Dealer has #{dealer_cards} : total points is #{dealer_points}"
-    # dealer_cards = show_card(dealer_hand)
     puts "Dealer busted!" if dealer_points > 21
     winner = compare_values(dealer_points, player_points, winner)
   end
